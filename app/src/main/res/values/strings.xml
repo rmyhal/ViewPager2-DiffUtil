@@ -1,0 +1,4 @@
+<resources>
+	<string name="app_name">ViewPager2 DiffUtil</string>
+    <string name="button_increment">Increment</string>
+</resources>
