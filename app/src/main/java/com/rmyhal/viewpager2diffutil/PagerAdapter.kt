@@ -44,9 +44,11 @@ class PagerAdapter(private val activity: FragmentActivity) : FragmentStateAdapte
 
     fun setItems(newItems: List<PagerItem>) {
         val callback = PagerDiffUtil(items, newItems)
-        DiffUtil.calculateDiff(callback).dispatchUpdatesTo(this)
+        val diff = DiffUtil.calculateDiff(callback)
 
         items.clear()
         items.addAll(newItems)
+
+        diff.dispatchUpdatesTo(this)
     }
 }
