@@ -5,10 +5,21 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
+import kotlin.properties.Delegates
 
 class PagerAdapter(private val activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-    private val items: ArrayList<PagerItem> = arrayListOf()
+    private var items by Delegates.observable(emptyList<PagerItem>()) {_, oldList, newList ->
+        PagerDiffUtil.withItems(oldList, newList).also { callback ->
+            DiffUtil.calculateDiff(callback).apply {
+                dispatchUpdatesTo(this@PagerAdapter)
+            }
+        }
+    }
+
+    fun setPagerItems(items: Array<PagerItem>) {
+        this.items = items.toList()
+    }
 
     override fun createFragment(position: Int): Fragment =
         PagerFragment.newInstance(items[position])
@@ -30,25 +41,12 @@ class PagerAdapter(private val activity: FragmentActivity) : FragmentStateAdapte
     ) {
         if (payloads.isNotEmpty()) {
             val tag = "f" + holder.itemId
-            val fragment = activity.supportFragmentManager.findFragmentByTag(tag)
-            // safe check ,but fragment should not be null
-            if (fragment != null) {
-                (fragment as PagerFragment).setValue(items[position].value)
-            } else {
-                super.onBindViewHolder(holder, position, payloads)
-            }
+            (activity.supportFragmentManager.findFragmentByTag(tag) as? PagerFragment)?.run {
+                setValue(items[position].value)
+            } ?: super.onBindViewHolder(holder, position, payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }
-    }
 
-    fun setItems(newItems: List<PagerItem>) {
-        val callback = PagerDiffUtil(items, newItems)
-        val diff = DiffUtil.calculateDiff(callback)
-
-        items.clear()
-        items.addAll(newItems)
-
-        diff.dispatchUpdatesTo(this)
     }
 }
