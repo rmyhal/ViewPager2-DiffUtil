@@ -2,7 +2,10 @@ package com.rmyhal.viewpager2diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 
-class PagerDiffUtil(private val oldList: List<PagerItem>, private val newList: List<PagerItem>) : DiffUtil.Callback() {
+class PagerDiffUtil private constructor(
+    private val oldList: List<PagerItem>,
+    private val newList: List<PagerItem>
+): DiffUtil.Callback() {
 
     enum class PayloadKey {
         VALUE
@@ -22,5 +25,11 @@ class PagerDiffUtil(private val oldList: List<PagerItem>, private val newList: L
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         return listOf(PayloadKey.VALUE)
+    }
+
+    companion object {
+        fun withItems(oldList: List<PagerItem>, newList: List<PagerItem>): PagerDiffUtil {
+            return PagerDiffUtil(oldList, newList)
+        }
     }
 }

@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.fragment_pager.*
 class PagerFragment : Fragment(R.layout.fragment_pager) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         txtTitle.text = requireArguments().getString(EXTRA_TITLE)
         view.setBackgroundColor(Color.parseColor(requireArguments().getString(EXTRA_COLOR)))
         setValue(requireArguments().getInt(EXTRA_VALUE))
